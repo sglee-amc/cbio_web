@@ -6239,6 +6239,7 @@ webpackJsonp([1], {
       h = n(1059);
     ! function () {
       d.timeline = function () {
+        var lineSpacing = 1.5, timelineMargin = 11;
         function e(e) {
           function t(e, t) {
             for (var n = -1 / 0, r = [], i = [], o = e.sort(function (e, t) {
@@ -6335,8 +6336,10 @@ webpackJsonp([1], {
                   var h = (A + O) * q[a];
                   G.selectAll("svg").data(p).enter().insert("rect").attr("class", "row-green-bar").attr("x", 0 + w.left).attr("width", s - w.right - w.left).attr("y", h).attr("height", A).attr("fill", f)
                 }
-                G.selectAll("svg").data(p).enter().append(R).attr("x", V).attr("y", l).attr("width", F).attr("cy", function (e, t) {
-                  return l(e, t) + A / 2
+                G.selectAll("svg").data(p).enter().append(R).attr("x", V).attr("y", function (e, t) {
+                  return (l(e, t) + A / 2) * lineSpacing - timelineMargin
+                }).attr("width", F).attr("cy", function (e, t) {
+                  return (l(e, t) + A / 2) * lineSpacing - timelineMargin
                 }).attr("cx", V).attr("r", L).attr("height", L).style("fill", function (e, n) {
                   var r;
                   return "display" in e && -1 !== e.display.split(" ").indexOf("unfilled") ? "rgb(255, 255, 255)" : e.color ? e.color : y ? (r = e[y], m(r ? r : t[y])) : m(d ? t.label : a)
@@ -6363,9 +6366,9 @@ webpackJsonp([1], {
                   var v = A + O / 2 + w.top + (A + O) * q[a];
                   e.append("svg:line").attr("class", "row-seperator").attr("x1", 0 + w.left).attr("x2", s - w.right).attr("y1", v).attr("y2", v).attr("stroke-width", 1).attr("stroke", c)
                 }
-                d && e.append("text").attr("class", "timeline-label").attr("transform", "translate(0," + (.75 * A + w.top + (A + O) * q[a]) + ")").text(d ? t.label : t.id).on("click", function (e, n) {
+                d && e.append("text").attr("class", "timeline-label").attr("transform", "translate(0," + (.75 * A + w.top + (A + O) * q[a] * lineSpacing) + ")").text(d ? t.label : t.id).on("click", function (e, n) {
                   o(e, a, t)
-                }), void 0 !== t.icon && e.append("image").attr("class", "timeline-label").attr("transform", "translate(0," + (w.top + (A + O) * q[a]) + ")").attr("xlink:href", t.icon).attr("width", w.left).attr("height", A)
+                }), void 0 !== t.icon && e.append("image").attr("class", "timeline-label").attr("transform", "translate(0," + (w.top + (A + O) * q[a] * lineSpacing) + ")").attr("xlink:href", t.icon).attr("width", w.left).attr("height", A)
               })
             }), s > z.width) {
             var X = function () {
@@ -6394,6 +6397,7 @@ webpackJsonp([1], {
             }), x) {
             B(Z(new Date), P)
           }
+          (document.querySelector(".scrollable")) ? document.querySelector(".scrollable").height.baseVal.value = (timelineMargin + document.querySelector(".scrollable").height.baseVal.value) : (document.querySelector(".timeline")) ? document.querySelector(".timeline").height.baseVal.value = (timelineMargin + document.querySelector(".timeline").height.baseVal.value) : "";
         }
         var t = ["circle", "rect"],
           n = function () {},
