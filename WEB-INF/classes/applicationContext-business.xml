@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns:tx="http://www.springframework.org/schema/tx"
+     xmlns:context="http://www.springframework.org/schema/context"
+     xsi:schemaLocation="
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+    <beans profile="jndi,dbcp">
+        <bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+            <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+            <property name="searchSystemEnvironment" value="true" />
+            <property name="ignoreResourceNotFound" value="true" />
+            <property name="locations">
+                <list>
+                    <value>file:///${PORTAL_HOME}/portal.properties</value>
+                    <value>classpath:/portal.properties</value>
+                    <value>classpath:/maven.properties</value>
+                </list>
+            </property>
+        </bean>
+
+        <!-- scan for mappers and let them be autowired -->
+        <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+            <property name="basePackage" value="org.mskcc.cbio.portal.persistence,org.cbioportal.persistence.mybatis" />
+        </bean>
+
+        <!-- these are required to get properly autowired mappers into our service classes -->
+        <!-- when creating services via manually loading this context file -->
+        <bean id="genePanelMapperLegacy" class="org.mybatis.spring.mapper.MapperFactoryBean">
+            <property name="mapperInterface" value="org.mskcc.cbio.portal.persistence.GenePanelMapperLegacy" />
+            <property name="sqlSessionFactory" ref="sqlSessionFactory" />
+        </bean>
+        <bean id="genePanelRepositoryLegacy" class="org.mskcc.cbio.portal.repository.GenePanelMyBatisRepositoryLegacy">
+            <property name="genePanelMapper" ref="genePanelMapperLegacy" />
+        </bean>
+
+        <bean id="cnSegmentMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+            <property name="mapperInterface" value="org.mskcc.cbio.portal.persistence.CNSegmentMapper" />
+            <property name="sqlSessionFactory" ref="sqlSessionFactory" />
+        </bean>
+        <bean id="cnSegmentRepository" class="org.mskcc.cbio.portal.repository.CNSegmentMyBatisRepository">
+            <property name="cnSegmentMapper" ref="cnSegmentMapper" />
+        </bean>
+
+        <bean id="mutationalSignatureMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+            <property name="mapperInterface" value="org.mskcc.cbio.portal.persistence.MutationalSignatureMapper" />
+            <property name="sqlSessionFactory" ref="sqlSessionFactory" />
+        </bean>
+        <bean id="mutationalSignatureRepository" class="org.mskcc.cbio.portal.repository.MutationalSignatureMyBatisRepository">
+            <property name="mutationalSignatureMapper" ref="mutationalSignatureMapper" />
+        </bean>
+
+        <bean id="structuralVariantMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+            <property name="mapperInterface" value="org.mskcc.cbio.portal.persistence.StructuralVariantMapper" />
+            <property name="sqlSessionFactory" ref="sqlSessionFactory" />
+        </bean>
+        <bean id="structuralVariantRepository" class="org.mskcc.cbio.portal.repository.StructuralVariantMyBatisRepository">
+            <property name="structuralVariantMapper" ref="structuralVariantMapper" />
+        </bean>
+
+        <!-- enable component scanning (beware that this does not enable mapper scanning!) -->
+        <context:component-scan base-package="org.mskcc.cbio.portal.service" />
+
+        <!-- enable autowire -->
+        <context:annotation-config />
+
+        <!-- enable transaction demarcation with annotations -->
+        <tx:annotation-driven />
+
+        <!-- transaction manager, use JtaTransactionManager for global tx -->
+        <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+            <property name="dataSource" ref="businessDataSource" />
+        </bean>
+
+        <bean id="customObjectFactory" class="org.cbioportal.persistence.mybatis.util.CustomMyBatisObjectFactory" />
+
+        <!-- define the SqlSessionFactory -->
+        <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+            <property name="dataSource" ref="businessDataSource" />
+            <property name="typeAliasesPackage" value="org.mskcc.cbio.portal.model" />
+            <property name="typeHandlersPackage" value="org.cbioportal.persistence.mybatis.typehandler" />
+            <property name="objectFactory" ref="customObjectFactory" />
+            <property name="configuration">
+                <bean class="org.apache.ibatis.session.Configuration">
+                    <property name="cacheEnabled" value="${mybatis.cache.enabled:true}" />
+                </bean>
+            </property>
+        </bean>
+    </beans>
+  
+    <beans profile="dbcp">
+        <!-- business data source -->
+        <!-- setting minIdle/maxIdle to 1 doesn't limit the number of active -->
+        <bean id="businessDataSource" destroy-method="close" class="org.apache.commons.dbcp2.BasicDataSource">
+            <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+            <property name="url" value="jdbc:mysql://localhost/cbioportal?zeroDateTimeBehavior=convertToNull"/>
+            <property name="username" value="cbio"/>
+            <property name="password" value="cbio"/>
+            <property name="minIdle" value="0"/>
+            <property name="maxIdle" value="10"/>
+            <property name="maxTotal" value="100"/>
+            <property name="poolPreparedStatements" value="true"/>
+        </bean>
+        <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+            <property name="staticMethod" value="org.mskcc.cbio.portal.dao.JdbcUtil.setDataSource"/>
+            <property name="arguments">
+                <list><ref bean="businessDataSource"/></list>
+            </property>
+        </bean>
+    </beans>
+
+    <beans profile="jndi">
+        <bean id="businessDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+            <property name="jndiName" value="java:comp/env/jdbc/cbioportal"/>
+        </bean>
+        <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+            <property name="staticMethod" value="org.mskcc.cbio.portal.dao.JdbcUtil.setDataSource"/>
+            <property name="arguments">
+                <list><ref bean="businessDataSource"/></list>
+            </property>
+        </bean>
+    </beans>
+</beans>

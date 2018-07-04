@@ -1,0 +1,12 @@
+.git/
+.metadata/
+
+*.properties
+*.class
+*.log
+*.bkup
+*.jar
+.classpath
+.project
+.vscode/
+.settings/
