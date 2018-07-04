@@ -5873,6 +5873,30 @@ webpackJsonp([1], {
           return u.createElement("div", {
             id: "timeline-container"
           }, u.createElement("div", {
+            id: "timeline_btn",
+            style:{
+                display: "flex",
+                marginBottom: "1px",
+                justifyContent: "flex-end"
+              }
+            }, u.createElement("input", {
+                type: "button",
+                value: "Grid on", 
+                className: "btn btn-sm btn-success",
+                onClick:function(e){
+                  var grid = document.querySelector('#timeline-container input');
+                  if(grid.value=="Grid on"){
+                    grid.value="Grid off";
+                    grid.className="btn btn-sm btn-default";
+                    document.querySelectorAll('.horizonal-line').forEach(function(e){e.style.cssText="stroke: rgb(235,235,235)"});
+                  }else if(grid.value=="Grid off"){
+                    grid.value="Grid on";
+                    grid.className="btn btn-sm btn-success";
+                    document.querySelectorAll('.horizonal-line').forEach(function(e){e.style.cssText="stroke: rgb(255,255,255)"});
+                  }
+                }
+            })
+          ), u.createElement("div", {
             id: "timeline"
           }))
         }
@@ -6366,6 +6390,8 @@ webpackJsonp([1], {
                   var v = A + O / 2 + w.top + (A + O) * q[a];
                   e.append("svg:line").attr("class", "row-seperator").attr("x1", 0 + w.left).attr("x2", s - w.right).attr("y1", v).attr("y2", v).attr("stroke-width", 1).attr("stroke", c)
                 }
+                if (q[a] > 1) 
+                  G.append("path").style("stroke", "rgb(255,255,255)").style("fill", "none").attr("class", "horizonal-line").attr("d", "M200," + ((A + O) * q[a] * lineSpacing + timelineMargin-5) + "H" + (U.attr("width") - 30))
                 d && e.append("text").attr("class", "timeline-label").attr("transform", "translate(0," + (.75 * A + w.top + (A + O) * q[a] * lineSpacing) + ")").text(d ? t.label : t.id).on("click", function (e, n) {
                   o(e, a, t)
                 }), void 0 !== t.icon && e.append("image").attr("class", "timeline-label").attr("transform", "translate(0," + (w.top + (A + O) * q[a] * lineSpacing) + ")").attr("xlink:href", t.icon).attr("width", w.left).attr("height", A)
