@@ -8607,10 +8607,67 @@ webpackJsonp([1], {
           });
           if (oe.studyMetaData.isComplete) {
             var o = oe.studyMetaData.result;
-            i = p.createElement("a", {
+            i = p.createElement("div", {
+              className: "studyMetaBarDiv",
+              style: {
+                 textAlign: "right"
+              }
+            }, p.createElement("a", {
               href: "study?id=" + o.studyId,
               className: "studyMetaBar_studyName"
-            }, o.name)
+            }, o.name),
+
+            p.createElement("div", {
+              className: "searchDiv",
+              style: {
+                textAlign: "right"
+              }
+            },
+              p.createElement("input", {
+                type: "radio",
+                name: "searchType",
+                value: "sampleId",
+                checked: true
+              }),
+              p.createElement("label", {
+                style: {
+                  width: "55px",
+                  textAlign: "left"
+                }
+              }, "Sample "),
+              p.createElement("input", {
+                type: "radio",
+                name: "searchType",
+                value: "caseId"
+              }),
+              p.createElement("label", {
+                style: {
+                  width: "55px",
+                  textAlign: "left"
+                }
+              }, "Patient "),
+              p.createElement("input", {
+                type: "text",
+                className: "patientSearchInput",
+                placeholder: "ID",
+                style: {
+                  width: 200
+                }
+              }),
+              p.createElement("button", {
+                className: "btn btn-sm btn-default",
+                onClick: function () {
+                  var url = location.href.substring(0, location.href.indexOf("?")+1); // current url
+                  var searchType = document.querySelector('input[name="searchType"]:checked').value;
+                  if(document.querySelector('.patientSearchInput').value != ""){
+                    url = url + "studyId=" + oe.studyMetaData.result.studyId + "&" + searchType + "=" + document.querySelector('.patientSearchInput').value;
+                    window.open(url, 'Patient: ' + document.querySelector('.patientSearchInput').value)
+                  }
+                  return false;
+                },
+                }, "Search")
+              )
+            )
           }
           if (oe.patientViewData.isComplete && oe.studyMetaData.isComplete) {
             var a = oe.patientViewData.result;
