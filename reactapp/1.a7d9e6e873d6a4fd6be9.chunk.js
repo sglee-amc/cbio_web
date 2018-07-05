@@ -6345,8 +6345,8 @@ webpackJsonp([1], {
           var Y = 1 / (b - g) * (s - w.left - w.right),
             Z = d.time.scale().domain([g, b]).range([w.left, s - w.right]),
             J = d.svg.axis().scale(Z).orient(l).tickFormat(h.format).tickSize(h.tickSize);
-          if (null !== h.tickValues ? J.tickValues(h.tickValues) : J.ticks(h.numTicks || h.tickTime, h.tickInterval), I && G.append("g").attr("class", "axis").attr("transform", "translate(0," + (w.top + (A + O) * W) + ")").call(J), S && G.append("g").attr("class", "axis").attr("transform", "translate(0," + (w.top + (A + O) * W) + ")").attr(M.stroke, M.spacing).call(J.tickFormat("").tickSize(-(w.top + (A + O) * (W - 1) + 3), 0, 0)), G.each(function (t, a) {
-              t.forEach(function (t, a) {
+          if (null !== h.tickValues ? J.tickValues(h.tickValues) : J.ticks(h.numTicks || h.tickTime, h.tickInterval), I && G.append("g").attr("class", "axis").attr("transform", "translate(0," + (w.top + (A + O) * W) + ")").call(J), S && G.append("g").attr("class", "axis").attr("transform", "translate(0," + (w.top + (A + O) * W) + ")").attr(M.stroke, M.spacing).call(J.tickFormat("").tickSize(-(w.top + (A + O) * (W - 1) + 3), 0, 0)), G.each(function (x, a) {
+              x.forEach(function (t, a) {
                 function l(e, t) {
                   return E ? w.top + (A + O) * e.stack : w.top
                 }
@@ -6360,6 +6360,14 @@ webpackJsonp([1], {
                   var h = (A + O) * q[a];
                   G.selectAll("svg").data(p).enter().insert("rect").attr("class", "row-green-bar").attr("x", 0 + w.left).attr("width", s - w.right - w.left).attr("y", h).attr("height", A).attr("fill", f)
                 }
+                var gParent = ""; // assume the depth of item is 3
+                // for loop, find latest parent and save it as gParent
+                for (var i = a - 1; i >= 0; i--) { 
+                  if ((x[i].label.lastIndexOf('    ') < t.label.lastIndexOf('    ')) && x[i].label.lastIndexOf('    ') == -1) {
+                    gParent = " sub" + x[i].label;
+                    break;
+                  }
+                }
                 G.selectAll("svg").data(p).enter().append(R).attr("x", V).attr("y", function (e, t) {
                   return (l(e, t) + A / 2) * lineSpacing - timelineMargin
                 }).attr("width", F).attr("cy", function (e, t) {
@@ -6367,7 +6375,7 @@ webpackJsonp([1], {
                 }).attr("cx", V).attr("r", L).attr("height", L).style("fill", function (e, n) {
                   var r;
                   return "display" in e && -1 !== e.display.split(" ").indexOf("unfilled") ? "rgb(255, 255, 255)" : e.color ? e.color : y ? (r = e[y], m(r ? r : t[y])) : m(d ? t.label : a)
-                }).style("stroke", function (e, n) {
+                }).style("fill-opacity", 0.7).style("stroke", function (e, n) {
                   if ("display" in e && -1 !== e.display.split(" ").indexOf("unfilled")) return e.color ? e.color : m(d ? t.label : a)
                 }).attr("filter", function (e, t) {
                   return "display" in e && -1 !== e.display.split(" ").indexOf("dropshadow") ? "url(#dropshadow)" : ""
@@ -6380,7 +6388,7 @@ webpackJsonp([1], {
                 }).on("click", function (e, n) {
                   o(e, a, t)
                 }).attr("class", function (e, n) {
-                  return t.class ? "timelineSeries_" + t.class : "timelineSeries_" + a
+                  return t.class ? "timelineSeries_" + t.class + gParent + (t.parent_track ? ' sub' + (t.parent_track.trim().replace(" ", "-")) : "") : "timelineSeries_" + a + gParent + (t.parent_track ? " sub" + t.parent_track.trim().replace(" ", "-") : "")
                 }).attr("id", function (e, n) {
                   return t.id && !e.id ? "timelineItem_" + t.id : e.id ? e.id : "timelineItem_" + a + "_" + n
                 });
@@ -6392,9 +6400,104 @@ webpackJsonp([1], {
                 }
                 if (q[a] > 1) 
                   G.append("path").style("stroke", "rgb(255,255,255)").style("fill", "none").attr("class", "horizonal-line").attr("d", "M200," + ((A + O) * q[a] * lineSpacing + timelineMargin-5) + "H" + (U.attr("width") - 30))
-                d && e.append("text").attr("class", "timeline-label").attr("transform", "translate(0," + (.75 * A + w.top + (A + O) * q[a] * lineSpacing) + ")").text(d ? t.label : t.id).on("click", function (e, n) {
-                  o(e, a, t)
-                }), void 0 !== t.icon && e.append("image").attr("class", "timeline-label").attr("transform", "translate(0," + (w.top + (A + O) * q[a] * lineSpacing) + ")").attr("xlink:href", t.icon).attr("width", w.left).attr("height", A)
+                // if item doesn't exist
+                if (t.times.length == 0) {
+                  d && e.append("text").attr("class", "timeline-label / " + gParent + (t.parent_track ? " sub" + (t.label.trim().replace(' ', '-')) : "")).attr("transform", "translate(0," + (.75 * A + w.top + (A + O) * q[a] * lineSpacing) + ")").text("▼" + (d ? t.label : t.id)).attr("name", t.parent_track ? "sub" + t.parent_track.trim().replace(" ", "_") : "").on("click", function (e, n) { //▷▶▼
+                    var txtDisplay = "",
+                      selectedClass = document.querySelectorAll('.sub' + (t.label.trim().replace(' ', '-'))), // all of label, circle, rect
+                      showSubLevel = "▼",
+                      numException = 0,
+                      subExcepion = "",
+                      numSubLabel = document.getElementsByName('sub' + (t.label.trim().replace(' ', '_'))).length,
+                      allTimelineLabel = document.querySelectorAll('.timeline-label');
+
+                    if (this.innerHTML.substr(0, 1) == '▼') {
+                      txtDisplay = 'none';
+                      itemDisplay = 'none';
+                      showSubLevel = "▷";
+                      numSubLabel = -numSubLabel;
+                    }
+                    if (numSubLabel == 0) {
+                      if (this.innerHTML.substr(0, 1) == '▼') {
+                        for (var i = 0; i < selectedClass.length; i++) {
+                          if (selectedClass[i].localName == 'text' && selectedClass[i].style.display == '') {
+                            numSubLabel--;  //count text
+                          }
+                          selectedClass[i].style.display = txtDisplay;
+                        }
+                      } else if (this.innerHTML.substr(0, 1) == '▷') {
+                        // timelineitems -> labels
+                        for (var i = 0; i < selectedClass.length; i++) {
+                          txtDisplay = '';
+                          if (selectedClass[i].localName == 'text' && selectedClass[i].style.display == 'none') {
+                            if (selectedClass[i].innerHTML.substr(0, 1) == '▷') { // 하위 레벨 숨긴 항목 찾아서 클래스명 변수에 저장
+                              subExcepion = selectedClass[i].innerHTML.substr(1).trim().replace(' ', '-');
+                              numSubLabel++;
+                              // item display: none, after labeling
+                              for (var j = 0; j < selectedClass.length; j++) {
+                                if (selectedClass[j].localName != 'text' && selectedClass[j].classList.value.indexOf(subExcepion) > 0) { //subExcepion
+                                  itemDisplay = 'none';
+                                  selectedClass[j].style.display = itemDisplay;
+                                }
+                              }
+                            } else {
+                              if (selectedClass[i].classList.value.indexOf(subExcepion) > 0) { //subExcepion
+                                txtDisplay = 'none';
+                                numException++;
+                              } else {
+                                numSubLabel++;
+                              }
+                            }
+                          }
+                          selectedClass[i].style.display = txtDisplay;
+                        }
+                      }
+                      this.innerHTML = showSubLevel + (d ? t.label : t.id);
+
+                      // relocate items
+                      for (var i = q[a] + Math.abs(numSubLabel) - 1; i < allTimelineLabel.length - 1; i++) {
+                        var allTimelineSeries = document.querySelectorAll('.timelineSeries_' + i);
+                        allTimelineLabel[i].transform.baseVal[0].matrix.f = allTimelineLabel[i].transform.baseVal[0].matrix.f + ((A + O) * (numSubLabel) * lineSpacing);
+                        for (var j = 0; j < allTimelineSeries.length; j++) {
+                          if (allTimelineSeries[j].localName == 'rect') {
+                            allTimelineSeries[j].y.baseVal.value = allTimelineSeries[j].y.baseVal.value + ((A + O) * (numSubLabel) * lineSpacing);
+                          } else if (allTimelineSeries[j].localName == "circle") {
+                            allTimelineSeries[j].cy.baseVal.value = allTimelineSeries[j].cy.baseVal.value + ((A + O) * (numSubLabel) * lineSpacing);
+                          }
+                        }
+                      }
+                      // pannel height ; .scrollable .timeline
+                      (document.querySelector(".scrollable")) ? document.querySelector(".scrollable").height.baseVal.value = document.querySelector(".scrollable").height.baseVal.value + ((A + O) * (numSubLabel) * lineSpacing): (document.querySelector(".timeline")) ? document.querySelector(".timeline").height.baseVal.value = document.querySelector(".timeline").height.baseVal.value + ((A + O) * (numSubLabel) * lineSpacing) : "";
+                    } else {
+                      this.innerHTML = showSubLevel + (d ? t.label : t.id);
+                      for (var i = 0; i < selectedClass.length; i++) {
+                        selectedClass[i].style.display = txtDisplay;
+                      }
+                      // relocate items
+                      for (var i = q[a] + Math.abs(numSubLabel) - 1; i < allTimelineLabel.length - 1; i++) {
+                        var allTimelineSeries = document.querySelectorAll('.timelineSeries_' + i);
+                        allTimelineLabel[i].transform.baseVal[0].matrix.f = allTimelineLabel[i].transform.baseVal[0].matrix.f + ((A + O) * (numSubLabel) * lineSpacing);
+                        for (var j = 0; j < allTimelineSeries.length; j++) {
+                          if (allTimelineSeries[j].localName == 'rect') {
+                            allTimelineSeries[j].y.baseVal.value = allTimelineSeries[j].y.baseVal.value + ((A + O) * (numSubLabel) * lineSpacing);
+                          } else if (allTimelineSeries[j].localName == "circle") {
+                            allTimelineSeries[j].cy.baseVal.value = allTimelineSeries[j].cy.baseVal.value + ((A + O) * (numSubLabel) * lineSpacing);
+                          }
+                        }
+                      }
+                      // pannel height ; .scrollable .timeline
+                      document.querySelector(".scrollable") ? document.querySelector(".scrollable").height.baseVal.value = document.querySelector(".scrollable").height.baseVal.value + ((A + O) * (numSubLabel) * lineSpacing) : document.querySelector(".timeline") ? document.querySelector(".timeline").height.baseVal.value = document.querySelector(".timeline").height.baseVal.value + ((A + O) * (numSubLabel) * lineSpacing) : ""
+                    }
+                    // o(e, a, t)
+                  }), void 0 !== t.icon && e.append("image").attr("class", "timeline-label").attr("transform", "translate(0," + (w.top + (A + O) * q[a]) + ")").attr("xlink:href", t.icon).attr("width", w.left).attr("height", A)
+                } else {
+                  d && e.append("text").attr("class", "timeline-label" + gParent + (t.parent_track ? ' sub' + (t.parent_track.trim().replace(' ', '-')) : "")).attr("transform", "translate(0," + (.75 * A + w.top + (A + O) * q[a] * lineSpacing) + ")").text("　" + (d ? t.label : t.id)).attr("name", t.parent_track ? "sub" + t.parent_track.trim().replace(" ", "_") : "").on("click", function (e, n) {
+                    o(e, a, t)
+                  }), void 0 !== t.icon && e.append("image").attr("class", "timeline-label").attr("transform", "translate(0," + (w.top + (A + O) * q[a] * lineSpacing) + ")").attr("xlink:href", t.icon).attr("width", w.left).attr("height", A)
+                }
+                if (a=== x.length-1) {
+                    G.append("path").style("stroke", "rgb(255,255,255)").style("fill", "none").attr("class", "horizonal-base-line").attr("d", "M200," + (28 + (A + O) * q[a] * lineSpacing) + "H" + (U.attr("width") - 30))
+                }
               })
             }), s > z.width) {
             var X = function () {
