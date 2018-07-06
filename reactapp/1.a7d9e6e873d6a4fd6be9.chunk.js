@@ -6391,6 +6391,8 @@ webpackJsonp([1], {
                   return t.class ? "timelineSeries_" + t.class + gParent + (t.parent_track ? ' sub' + (t.parent_track.trim().replace(" ", "-")) : "") : "timelineSeries_" + a + gParent + (t.parent_track ? " sub" + t.parent_track.trim().replace(" ", "-") : "")
                 }).attr("id", function (e, n) {
                   return t.id && !e.id ? "timelineItem_" + t.id : e.id ? e.id : "timelineItem_" + a + "_" + n
+                }).attr("data-label", function (e, n) {
+                  return (t.label ? t.label.trim() : "")
                 });
                 if (G.selectAll("svg").data(p).enter().append("text").attr("x", H).attr("y", u).text(function (e) {
                     return e.label
@@ -7513,7 +7515,7 @@ webpackJsonp([1], {
                 var i, o = p.parseHTML("<div></div>"),
                   a = e.prop("__data__");
                 if ("tooltip_tables" in a)
-                  for (var l = 0; l < a.tooltip_tables.length; l++) 0 !== l && p(o).append("<hr />"), i = p.parseHTML("<table style='text-align:left; background-color: white;'></table>"), p(i).dataTable(t(a.tooltip_tables[l])), p(o).append(i);
+                  for (var l = 0; l < a.tooltip_tables.length; l++) 0 !== l && p(o).append("<hr />"), i = p.parseHTML("<table style='text-align:left; background-color: white;'></table>"), p(i).dataTable(e[0].dataset.label ? t([["[ "+e[0].dataset.label+" ]",""]].concat(a.tooltip_tables[l])) : t([["[ "+e[0].childNodes[0].dataset.label+" ]",""]].concat(a.tooltip_tables[l]))), p(o).append(i);
                 else "tooltip" in a && (i = p.parseHTML("<table style='text-align:left; background-color: white;'></table>"), p(i).dataTable(t(a.tooltip)), p(o).append(i));
                 p(this).html(o), p(this).addClass(R.substr(1) + "-qtip"), r.elements.target.click(function (e) {
                   r.wasClicked ? (r.hide(), r.wasClicked = !1) : r.wasClicked = !r.wasClicked
