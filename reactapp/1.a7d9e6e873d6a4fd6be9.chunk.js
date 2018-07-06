@@ -5895,9 +5895,104 @@ webpackJsonp([1], {
                     document.querySelectorAll('.horizonal-line').forEach(function(e){e.style.cssText="stroke: rgb(255,255,255)"});
                   }
                 }
+            }), u.createElement("label", {
+              style:{
+                width: "50px",
+                textAlign: "right",
+                marginRight: "10px"}
+              }, "Zoom")
+          , u.createElement("input", {
+              type: "button",
+              value: "+",
+              class: "btn btn-sm btn-default",
+              onClick:function(){
+                var timelineWidth = 0;
+                var lineSpacing = 1.5, timelineMargin = 11;
+                if(document.querySelector('#timeline').style.width=="") {
+                  document.querySelector('#timeline').style.width =  document.querySelectorAll('.axis path')[0].viewportElement.scrollWidth + "px";
+                }
+
+                document.querySelectorAll( ".axis .tick" ).forEach(function(e){
+                  if(e.localName=="g"){
+                    timelineWidth = Math.round((e.transform.baseVal[0].matrix.e-200) * lineSpacing) + 200;
+                    e.transform.baseVal[0].matrix.e = timelineWidth;
+                  }
+                });
+                document.querySelectorAll( "[id^='timelineItem_']" ).forEach(function(e){
+                  if(e.localName=="circle"){
+                    e.cx.baseVal.value = Math.round((e.cx.baseVal.value-200) * lineSpacing) + 200;
+                  }else if(e.localName=="rect"){
+                    e.x.baseVal.value = Math.round((e.x.baseVal.value-200) * lineSpacing) + 200;
+                  }
+                });
+
+                document.querySelectorAll( ".timeline g" ).forEach(function(e){
+                  if(e.classList=="" && e.firstChild.localName=="circle"){
+                    e.transform.baseVal[0].matrix.e = Math.round((e.transform.baseVal[0].matrix.e-200) * lineSpacing) + 200;
+                    e.querySelector("circle").cx.baseVal.value = 0;
+                  }
+                });
+                document.querySelectorAll( ".horizonal-line" ).forEach(function(e){
+                  e.attributes.d.value = e.attributes.d.value.replace(/\H.*$/,'H'+timelineWidth);
+                });
+                document.querySelector('#timeline svg').width.baseVal.value = timelineWidth + 10;
+                document.querySelectorAll('.axis path')[1].attributes.d.value = "M200,-6V0H" + timelineWidth + "V-6";
+
+              }
+            }), u.createElement("input", {
+              type: "button",
+              value: "-",
+              class: "btn btn-sm btn-default",
+              onClick:function(){
+                var timelineWidth = 0, maxWidth = 0;
+                var lineSpacing = 1.5, timelineMargin = 11;
+                if(document.querySelector('#timeline').style.width=="") {
+                  document.querySelector('#timeline').style.width =  document.querySelectorAll('.axis path')[0].viewportElement.scrollWidth + "px";
+                }
+
+                document.querySelectorAll( ".axis .tick" ).forEach(function(e){
+                  if(e.localName=="g"){
+                    maxWidth = Math.round((e.transform.baseVal[0].matrix.e-200) / lineSpacing) + 200;
+                    //e.transform.baseVal[0].matrix.e = timelineWidth;
+                  }
+                });
+
+                var check;
+                check = (document.querySelectorAll('#timeline')[0].clientWidth) - maxWidth-30 ;
+
+                if(check <= 0){
+                  document.querySelectorAll( ".axis .tick" ).forEach(function(e){
+                    if(e.localName=="g"){
+                      timelineWidth = Math.round((e.transform.baseVal[0].matrix.e-200) / lineSpacing) + 200;
+                      e.transform.baseVal[0].matrix.e = timelineWidth;
+                    }
+                  });
+                  // path <path class="domain" d="M200,-6V0H'1274'V-6"></path>
+                  document.querySelectorAll( "[id^='timelineItem_']" ).forEach(function(e){
+                    if(e.localName=="circle"){
+                      e.cx.baseVal.value = Math.round((e.cx.baseVal.value-200) / lineSpacing) + 200;
+                    }else if(e.localName=="rect"){
+                      e.x.baseVal.value = Math.round((e.x.baseVal.value-200) / lineSpacing) + 200;
+                    }
+                  });
+
+                  document.querySelectorAll( ".timeline g" ).forEach(function(e){
+                    if(e.classList=="" && e.firstChild.localName=="circle"){
+                      e.transform.baseVal[0].matrix.e = Math.round((e.transform.baseVal[0].matrix.e-200) / lineSpacing) + 200;
+                      e.querySelector("circle").cx.baseVal.value = 0;
+                    }
+                  });
+                  document.querySelectorAll( ".horizonal-line" ).forEach(function(e){
+                    e.attributes.d.value = e.attributes.d.value.replace(/\H.*$/,'H'+timelineWidth);
+                  });
+                  document.querySelector('#timeline svg').width.baseVal.value = timelineWidth + 10;
+                  document.querySelectorAll('.axis path')[1].attributes.d.value = "M200,-6V0H" + timelineWidth + "V-6";
+                }
+              }
             })
           ), u.createElement("div", {
-            id: "timeline"
+            id: "timeline",
+            style:{overflowX:"auto"}
           }))
         }
       }]), t
