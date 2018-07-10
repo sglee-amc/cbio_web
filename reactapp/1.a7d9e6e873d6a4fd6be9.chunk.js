@@ -5907,54 +5907,56 @@ webpackJsonp([1], {
               value: "+",
               class: "btn btn-sm btn-default",
               onClick:function(){
-                var timelineWidth = 0;
-                var lineSpacing = 1.5, timelineMargin = 11;
+                var svgWidth = 0, ratio = 1.5, timelineWidth,
+                    scrollX = document.querySelector('#timeline').scrollLeft;
                 if(document.querySelector('#timeline').style.width=="") {
                   document.querySelector('#timeline').style.width =  document.querySelectorAll('.axis path')[0].viewportElement.scrollWidth + "px";
                 }
+                timelineWidth = document.querySelector('#timeline').style.width.replace(/[^0-9]/g,'');
 
                 document.querySelectorAll( ".axis .tick" ).forEach(function(e){
                   if(e.localName=="g"){
-                    timelineWidth = Math.round((e.transform.baseVal[0].matrix.e-200) * lineSpacing) + 200;
-                    e.transform.baseVal[0].matrix.e = timelineWidth;
+                    svgWidth = Math.round((e.transform.baseVal[0].matrix.e-200) * ratio) + 200;
+                    e.transform.baseVal[0].matrix.e = svgWidth;
                   }
                 });
                 document.querySelectorAll( "[id^='timelineItem_']" ).forEach(function(e){
                   if(e.localName=="circle"){
-                    e.cx.baseVal.value = Math.round((e.cx.baseVal.value-200) * lineSpacing) + 200;
+                    e.cx.baseVal.value = Math.round((e.cx.baseVal.value-200) * ratio) + 200;
                   }else if(e.localName=="rect"){
-                    e.x.baseVal.value = Math.round((e.x.baseVal.value-200) * lineSpacing) + 200;
+                    e.x.baseVal.value = Math.round((e.x.baseVal.value-200) * ratio) + 200;
                   }
                 });
-
                 document.querySelectorAll( ".timeline g" ).forEach(function(e){
                   if(e.classList=="" && e.firstChild.localName=="circle"){
-                    e.transform.baseVal[0].matrix.e = Math.round((e.transform.baseVal[0].matrix.e-200) * lineSpacing) + 200;
+                    e.transform.baseVal[0].matrix.e = Math.round((e.transform.baseVal[0].matrix.e-200) * ratio) + 200;
                     e.querySelector("circle").cx.baseVal.value = 0;
                   }
                 });
                 document.querySelectorAll( ".horizonal-line" ).forEach(function(e){
-                  e.attributes.d.value = e.attributes.d.value.replace(/\H.*$/,'H'+timelineWidth);
+                  e.attributes.d.value = e.attributes.d.value.replace(/\H.*$/,'H'+svgWidth);
                 });
-                document.querySelector('#timeline svg').width.baseVal.value = timelineWidth + 10;
-                document.querySelectorAll('.axis path')[1].attributes.d.value = "M200,-6V0H" + timelineWidth + "V-6";
-
+                document.querySelector('#timeline svg').width.baseVal.value = svgWidth + 10;
+                document.querySelectorAll('.axis path')[1].attributes.d.value = "M200,-6V0H" + svgWidth + "V-6";
+                if(scrollX > 0){
+                  document.querySelector('#timeline').scrollLeft = -80 + scrollX * ratio + (timelineWidth * ratio -timelineWidth)/2;
+                }
               }
             }), u.createElement("input", {
               type: "button",
               value: "-",
               class: "btn btn-sm btn-default",
               onClick:function(){
-                var timelineWidth = 0, maxWidth = 0;
-                var lineSpacing = 1.5, timelineMargin = 11;
+                var svgWidth = 0, ratio = 1.5, timelineWidth, maxWidth = 0,
+                    scrollX = document.querySelector('#timeline').scrollLeft;
                 if(document.querySelector('#timeline').style.width=="") {
                   document.querySelector('#timeline').style.width =  document.querySelectorAll('.axis path')[0].viewportElement.scrollWidth + "px";
                 }
+                timelineWidth = document.querySelector('#timeline').style.width.replace(/[^0-9]/g,'');
 
                 document.querySelectorAll( ".axis .tick" ).forEach(function(e){
                   if(e.localName=="g"){
-                    maxWidth = Math.round((e.transform.baseVal[0].matrix.e-200) / lineSpacing) + 200;
-                    //e.transform.baseVal[0].matrix.e = timelineWidth;
+                    maxWidth = Math.round((e.transform.baseVal[0].matrix.e-200) / ratio) + 200;
                   }
                 });
 
@@ -5964,30 +5966,29 @@ webpackJsonp([1], {
                 if(check <= 0){
                   document.querySelectorAll( ".axis .tick" ).forEach(function(e){
                     if(e.localName=="g"){
-                      timelineWidth = Math.round((e.transform.baseVal[0].matrix.e-200) / lineSpacing) + 200;
-                      e.transform.baseVal[0].matrix.e = timelineWidth;
+                      svgWidth = Math.round((e.transform.baseVal[0].matrix.e-200) / ratio) + 200;
+                      e.transform.baseVal[0].matrix.e = svgWidth;
                     }
                   });
-                  // path <path class="domain" d="M200,-6V0H'1274'V-6"></path>
                   document.querySelectorAll( "[id^='timelineItem_']" ).forEach(function(e){
                     if(e.localName=="circle"){
-                      e.cx.baseVal.value = Math.round((e.cx.baseVal.value-200) / lineSpacing) + 200;
+                      e.cx.baseVal.value = Math.round((e.cx.baseVal.value-200) / ratio) + 200;
                     }else if(e.localName=="rect"){
-                      e.x.baseVal.value = Math.round((e.x.baseVal.value-200) / lineSpacing) + 200;
+                      e.x.baseVal.value = Math.round((e.x.baseVal.value-200) / ratio) + 200;
                     }
                   });
-
                   document.querySelectorAll( ".timeline g" ).forEach(function(e){
                     if(e.classList=="" && e.firstChild.localName=="circle"){
-                      e.transform.baseVal[0].matrix.e = Math.round((e.transform.baseVal[0].matrix.e-200) / lineSpacing) + 200;
+                      e.transform.baseVal[0].matrix.e = Math.round((e.transform.baseVal[0].matrix.e-200) / ratio) + 200;
                       e.querySelector("circle").cx.baseVal.value = 0;
                     }
                   });
                   document.querySelectorAll( ".horizonal-line" ).forEach(function(e){
-                    e.attributes.d.value = e.attributes.d.value.replace(/\H.*$/,'H'+timelineWidth);
+                    e.attributes.d.value = e.attributes.d.value.replace(/\H.*$/,'H'+svgWidth);
                   });
-                  document.querySelector('#timeline svg').width.baseVal.value = timelineWidth + 10;
-                  document.querySelectorAll('.axis path')[1].attributes.d.value = "M200,-6V0H" + timelineWidth + "V-6";
+                  document.querySelector('#timeline svg').width.baseVal.value = svgWidth + 10;
+                  document.querySelectorAll('.axis path')[1].attributes.d.value = "M200,-6V0H" + svgWidth + "V-6";
+                  document.querySelector('#timeline').scrollLeft = 80 + (scrollX - (timelineWidth * ratio -timelineWidth)/2)  / ratio;
                 }
               }
             })
