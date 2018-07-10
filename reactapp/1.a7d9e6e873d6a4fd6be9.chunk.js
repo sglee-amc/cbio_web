@@ -5899,7 +5899,8 @@ webpackJsonp([1], {
               style:{
                 width: "50px",
                 textAlign: "right",
-                marginRight: "10px"}
+                marginRight: "10px", 
+                marginTop: "7px"}
               }, "Zoom")
           , u.createElement("input", {
               type: "button",
