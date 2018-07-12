@@ -8669,6 +8669,7 @@ webpackJsonp([1], {
         key: "handlePatientClick",
         value: function (e) {
           var t = e.split(":");
+          document.querySelectorAll('.qtip').forEach(function(e){e.style="";})
           2 == t.length ? this.props.routing.updateRoute({
             studyId: t[0],
             caseId: t[1],
