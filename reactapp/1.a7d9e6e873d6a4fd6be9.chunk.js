@@ -5933,6 +5933,12 @@ webpackJsonp([1], {
                     e.querySelector("circle").cx.baseVal.value = 0;
                   }
                 });
+                if(document.querySelector('.kink path')){
+                  document.querySelector('.kink path').transform.baseVal[0].matrix.e = Math.round(parseFloat((document.querySelector('.kink path').transform.baseVal[0].matrix.e)+92.5-200) * ratio) -92.5 + 200;
+                }
+                if(document.querySelector('.kink rect')){
+                  document.querySelector('.kink rect').x.baseVal.value = Math.round(parseFloat((document.querySelector('.kink rect').x.baseVal.value)+17.5-200) * ratio) -17.5 + 200;
+                }
                 document.querySelectorAll( ".horizonal-line" ).forEach(function(e){
                   e.attributes.d.value = e.attributes.d.value.replace(/\H.*$/,'H'+svgWidth);
                 });
@@ -5983,6 +5989,12 @@ webpackJsonp([1], {
                       e.querySelector("circle").cx.baseVal.value = 0;
                     }
                   });
+                  if(document.querySelector('.kink path')){
+                    document.querySelector('.kink path').transform.baseVal[0].matrix.e = Math.round(parseFloat((document.querySelector('.kink path').transform.baseVal[0].matrix.e)+92.5-200) / ratio) -92.5 + 200;
+                  }
+                  if(document.querySelector('.kink rect')){
+                    document.querySelector('.kink rect').x.baseVal.value = Math.round(parseFloat((document.querySelector('.kink rect').x.baseVal.value)+17.5-200) / ratio) -17.5 + 200;
+                  }
                   document.querySelectorAll( ".horizonal-line" ).forEach(function(e){
                     e.attributes.d.value = e.attributes.d.value.replace(/\H.*$/,'H'+svgWidth);
                   });
