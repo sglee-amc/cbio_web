@@ -6939,7 +6939,19 @@ webpackJsonp([1], {
       }
 
       function r() {
+        var grid = document.querySelector('#timeline-container input');
+        if(grid.value=="Grid off"){
+          grid.value="Grid on";
+          grid.className="btn btn-sm btn-success";
+          document.querySelectorAll('.horizonal-line').forEach(function(e){e.style.cssText="stroke: rgb(255,255,255)"});
+        }
         e.pluginSetOrGetState("trimClinicalTimeline", !1), xAxisBBox = d.select(e.divId() + " > svg > g > g.axis")[0][0].getBBox(), d.select(e.divId() + "> svg > g").insert("rect").attr("x", xAxisBBox.x).attr("y", 4).attr("width", xAxisBBox.width).attr("height", xAxisBBox.height).attr("fill", "rgba(0,0,0,0)").style("cursor", "pointer").on("click", function () {
+          var grid = document.querySelector('#timeline-container input');
+          if(grid.value=="Grid off"){
+            grid.value="Grid on";
+            grid.className="btn btn-sm btn-success";
+            document.querySelectorAll('.horizonal-line').forEach(function(e){e.style.cssText="stroke: rgb(255,255,255)"});
+          }
           e.pluginSetOrGetState("trimClinicalTimeline", !0)
         }).append("svg:title").text("Click to trim the timeline")
       }
