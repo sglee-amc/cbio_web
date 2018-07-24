@@ -5946,7 +5946,7 @@ webpackJsonp([1], {
                   e.attributes.d.value = e.attributes.d.value.replace(/\H.*$/,'H'+svgWidth);
                 });
                 document.querySelector('#timeline svg').width.baseVal.value = svgWidth + 10;
-                document.querySelectorAll('.axis path')[1].attributes.d.value = "M200,-6V0H" + svgWidth + "V-6";
+                document.querySelectorAll('.axis path').forEach(function(e){e.attributes.d.value = "M200,-6V0H" + svgWidth + "V-6";})
                 if(scrollX > 0){
                   document.querySelector('#timeline').scrollLeft = -80 + scrollX * ratio + (timelineWidth * ratio -timelineWidth)/2;
                 }
@@ -6005,7 +6005,7 @@ webpackJsonp([1], {
                     e.attributes.d.value = e.attributes.d.value.replace(/\H.*$/,'H'+svgWidth);
                   });
                   document.querySelector('#timeline svg').width.baseVal.value = svgWidth + 10;
-                  document.querySelectorAll('.axis path')[1].attributes.d.value = "M200,-6V0H" + svgWidth + "V-6";
+                  document.querySelectorAll('.axis path').forEach(function(e){e.attributes.d.value = "M200,-6V0H" + svgWidth + "V-6";})
                   document.querySelector('#timeline').scrollLeft = 80 + (scrollX - (timelineWidth * ratio -timelineWidth)/2)  / ratio;
                 }
               }
