@@ -5909,6 +5909,9 @@ webpackJsonp([1], {
               onClick:function(){
                 var svgWidth = 0, ratio = 1.5, timelineWidth,
                     scrollX = document.querySelector('#timeline').scrollLeft;
+                document.querySelectorAll('.timeline-qtip').forEach(function(e){
+                  e.style.left = '', e.style.top = '', e.style.opacity = '', e.style.display = '';
+                });
                 if(document.querySelector('#timeline').style.width=="") {
                   document.querySelector('#timeline').style.width =  document.querySelectorAll('.axis path')[0].viewportElement.scrollWidth + "px";
                 }
@@ -5955,6 +5958,9 @@ webpackJsonp([1], {
               onClick:function(){
                 var svgWidth = 0, ratio = 1.5, timelineWidth, maxWidth = 0,
                     scrollX = document.querySelector('#timeline').scrollLeft;
+                document.querySelectorAll('.timeline-qtip').forEach(function(e){
+                  e.style.left = '', e.style.top = '', e.style.opacity = '', e.style.display = '';
+                });
                 if(document.querySelector('#timeline').style.width=="") {
                   document.querySelector('#timeline').style.width =  document.querySelectorAll('.axis path')[0].viewportElement.scrollWidth + "px";
                 }
