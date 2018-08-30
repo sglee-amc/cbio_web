@@ -6299,7 +6299,8 @@ webpackJsonp([1], {
               break
             }
           }
-          window.pvTimeline = h.default.clinicalTimeline().width(l).data(u).divId("#timeline").setTimepointsDisplay("Imaging", "square").orderTracks(["Specimen", "Surgery", "Status", "Diagnostics", "Diagnostic", "Imaging", "Lab_test", "Treatment"]).splitByClinicalAttributes("Lab_test", "TEST");
+          window.pvTimeline = h.default.clinicalTimeline().width(l).data(u).divId("#timeline").setTimepointsDisplay("Imaging", "square").orderTracks(["Specimen", "Surgery", "Status", "Diagnostics", "Diagnostic", "Imaging", "Lab_test", "Treatment"]).splitByClinicalAttributes("Specimen", "SPECIMEN_TYPE")
+          , window.pvTimeline = window.pvTimeline.splitByClinicalAttributes("Lab_test", "TEST");
           window.pvTimeline.data().filter(function (e) {
             return "Lab_test" === e.parent_track && c.every(e.times.map(function (e) {
               return 1 === e.tooltip_tables.length && e.tooltip_tables[0].filter(function (e) {
