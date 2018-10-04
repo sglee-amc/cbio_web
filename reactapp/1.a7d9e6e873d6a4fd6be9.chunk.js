@@ -6234,8 +6234,8 @@ webpackJsonp([1], {
           a = [i],
           l = o.OTHER_SAMPLE_ID;
         l && (a = a.concat(l));
-        var u = p.selectAll(".timelineSeries_0").filter(function (e) {
-          if (1 === e.tooltip_tables.length) {
+        var u = p.selectAll(".subSpecimen").filter(function (e) {
+          if (Array.isArray(e.tooltip_tables) && 1 === e.tooltip_tables.length) {
             var t = e.tooltip_tables[0].filter(function (e) {
               return "SpecimenReferenceNumber" === e[0] || "SPECIMEN_REFERENCE_NUMBER" === e[0] || "SAMPLE_ID" === e[0]
             })[0];
