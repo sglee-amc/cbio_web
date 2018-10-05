@@ -20,7 +20,7 @@
     
 <title>${title}</title>
     
-<link rel="icon" href="images/cbioportal_icon.png"/>
+<link rel="icon" href="images/symbol_color.gif"/>
 <jsp:include page="/WEB-INF/jsp/global/frontend_config.jsp" />
 <link rel="stylesheet" href="css/header.css?<%=GlobalProperties.getAppVersion()%>" />
 <script src="js/src/load-frontend.js?<%=GlobalProperties.getAppVersion()%>"></script>

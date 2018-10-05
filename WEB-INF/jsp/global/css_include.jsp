@@ -35,7 +35,7 @@
 
 <!-- Include Global Style Sheets -->
 <link href="css/bootstrap.min.css?<%=GlobalProperties.getAppVersion()%>" type="text/css" rel="stylesheet" />
-<link rel="icon" href="images/cbioportal_icon.png"/>
+<link rel="icon" href="images/symbol_color.gif"/>
 <link href="css/responsiveslides.css?<%=GlobalProperties.getAppVersion()%>" type="text/css" rel="stylesheet" />
 <link href="css/tipTip.css?<%=GlobalProperties.getAppVersion()%>" type="text/css" rel="stylesheet" />
 <link href="css/jquery.qtip.min.css?<%=GlobalProperties.getAppVersion()%>" type="text/css" rel="stylesheet" />

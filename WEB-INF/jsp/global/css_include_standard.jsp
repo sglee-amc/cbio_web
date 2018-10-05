@@ -33,7 +33,7 @@
 <%@ page import="org.mskcc.cbio.portal.util.GlobalProperties" %>
 
 <!-- Include Global Style Sheets -->
-<link rel="icon" href="images/cbioportal_icon.png"/>
+<link rel="icon" href="images/symbol_color.gif"/>
 <link href="css/responsiveslides.css?<%=GlobalProperties.getAppVersion()%>" type="text/css" rel="stylesheet" />
 <link href="css/tipTip.css?<%=GlobalProperties.getAppVersion()%>" type="text/css" rel="stylesheet" />
 <link href="css/smoothness/jquery-ui-1.10.3.custom.css?<%=GlobalProperties.getAppVersion()%>" type="text/css" rel="stylesheet" />

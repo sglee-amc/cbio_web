@@ -58,7 +58,7 @@
 
 <header>
         <div id="leftHeaderContent">
-        <a id="cbioportal-logo" href="index.do"><img src="<c:url value="/images/cbioportal_logo.png"/>" alt="cBioPortal Logo" /></a>    
+        <a id="cbioportal-logo" href="index.do"><img src="<c:url value="/images/amc_ke_color.gif"/>" alt="cBioPortal Logo" /></a>    
     
         <nav id="main-nav">
             <ul>
@@ -152,10 +152,10 @@
                 </div>
             </div>
         </sec:authorize>
-
+        <% /*
         <c:if test="${rightLogo != ''}">
             <img id="institute-logo" src="<c:url value="${rightLogo}"/>" alt="Institute Logo" />
         </c:if>
         </div>
-
+        */ %>
     </header>
