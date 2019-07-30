@@ -12,8 +12,9 @@
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%
+    String userId = GlobalProperties.getAuthenticatedUserName();
     request.setCharacterEncoding("utf-8");
-    response.setHeader("Content-Disposition", "attachment; filename="+new SimpleDateFormat("yyyyMMdd_HH:mm:ss").format(new Date())+".csv"); // filename
+    response.setHeader("Content-Disposition", "attachment; filename="+new SimpleDateFormat("yyyyMMdd_HHmmss_").format(new Date())+userId+".csv"); // filename
 	response.setHeader("Content-Type", "text/csv; charset=MS949");  //content type
 
     String siteTitle = GlobalProperties.getTitle() + "::BRC LIST";
@@ -29,6 +30,11 @@
 
     int row = 0, duplicateRow = 0;
  
+    if(userId == null || userId.equals("")){
+        out.print("<script>alert('Could not verify ID' );</script>");
+        return;
+    }
+    
     try {
         conn = JdbcUtil.getDbConnection(DaoClinicalData.class);;
         
@@ -38,13 +44,9 @@
         }
 
         //pstmt = conn.prepareStatement("SELECT * FROM brc_request WHERE USER_ID=?");
-        String userId = GlobalProperties.getAuthenticatedUserName();
-        if(userId == null || userId.equals("")){
-            out.print("<script>alert('Could not verify ID' );</script>");
-            return;
-        }
 
         sql = "SELECT SEQ, BRC_CATEGORY, CLINICAL_EVENT_ID, CANCER_STUDY_IDENTIFIER, PATIENT_ID "
+            + "         , (SELECT `NAME` FROM cancer_study WHERE cancer_study.CANCER_STUDY_IDENTIFIER=brc_request.CANCER_STUDY_IDENTIFIER) AS CANCER_STUDY_NAME "
             + "         , (SELECT `VALUE` FROM clinical_event_data WHERE clinical_event_data.CLINICAL_EVENT_ID=brc_request.CLINICAL_EVENT_ID AND `KEY`='BRC_ID') AS BRC_ID "
             + "         , (SELECT `VALUE` FROM clinical_event_data WHERE clinical_event_data.CLINICAL_EVENT_ID=brc_request.CLINICAL_EVENT_ID AND `KEY`='SPECIMEN_ID') AS SPECIMEN_ID "
             + "         , (SELECT `VALUE` FROM clinical_event_data WHERE clinical_event_data.CLINICAL_EVENT_ID=brc_request.CLINICAL_EVENT_ID AND `KEY`='QUANTITY') AS QUANTITY "
@@ -61,12 +63,14 @@
         ArrayList<String[]> listRequest = new ArrayList<String[]>();
 
         if (rs != null){
-            out.println("No., Category, Study, Patient ID, Specimen ID, BRC ID, Quantity, Anatomic Sites, Specimen Type, Status, Date");
+            //out.println("No., Category, Study, Patient ID, Specimen ID, BRC ID, Quantity, Anatomic Sites, Specimen Type, Status, Date");
+            out.println("No., Study, Patient ID, Specimen ID, BRC ID, Quantity, Anatomic Sites, Specimen Type, Date");
             while (rs.next()) {
                 String[] brcInfo = new String[]{Integer.toString(rs.getInt("SEQ")),
                             rs.getString("BRC_CATEGORY"),
                             rs.getString("CLINICAL_EVENT_ID"),
                             rs.getString("CANCER_STUDY_IDENTIFIER"),
+                            rs.getString("CANCER_STUDY_NAME"),
                             rs.getString("PATIENT_ID"),
                             rs.getString("BRC_ID"),
                             rs.getString("SPECIMEN_ID"),
@@ -77,20 +81,22 @@
                             rs.getString("STATUS"),
                             rs.getString("ORDER_DATE")};
                 listRequest.add(brcInfo);
-                //out.println(Arrays.toString(brcInfo));
+                String status = null;
+                if(rs.getString("STATUS").equals("W")) status = "Waiting";
+                else if(rs.getString("STATUS").equals("Done")) status = "Done";
                 out.println(/*Integer.toString(rs.getInt("SEQ"))+", "+*/
                             ++row+", "+
-                            rs.getString("BRC_CATEGORY")+", "+
+                            /*rs.getString("BRC_CATEGORY")+", "+*/
                             /*rs.getString("CLINICAL_EVENT_ID")+", "+*/
-                            rs.getString("CANCER_STUDY_IDENTIFIER")+", "+
+                            rs.getString("CANCER_STUDY_NAME")+", "+
                             rs.getString("PATIENT_ID")+", "+
                             rs.getString("BRC_ID")+", "+
                             rs.getString("SPECIMEN_ID")+", "+
                             Float.toString(Float.parseFloat(rs.getString("QUANTITY")))+", "+
                             rs.getString("ANATOMIC_SITE_SOURCE_VALUE")+", "+
                             rs.getString("SPECIMEN_TYPE_DETAILED")+", "+
-                           /* rs.getString("ORDER_YN")+", "+*/
-                            rs.getString("STATUS")+", "+
+                            /* rs.getString("ORDER_YN")+", "+*/
+                            /*status+", "+*/
                             rs.getString("ORDER_DATE"));
             }
         }
